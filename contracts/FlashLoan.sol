@@ -27,4 +27,26 @@ contract FlashLoan {
     uint256 private deadline = block.timestamp + 1 days;
     uint256 private constant MAX_INT =
         115792089237316195423570985008687907853269984665640564039457584007913129639935;
+
+    function initiateArbitrage(address _busdBorrow, uint _amount){
+        IERC20(BUSD).safeApprove(address(PANCAKE_ROUTER), MAX_INT); //mere behalf pe pancake_router spend kar sakta he busd tokens(authority de rahe he) 
+        IERC20(CROX).safeApprove(address(PANCAKE_ROUTER), MAX_INT);
+        IERC20(CAKE).safeApprove(address(PANCAKE_ROUTER), MAX_INT);
+    
+        address pair = IUniswapV2Factory(PANCAKE_ROUTER).getPair(
+            _busdBorrow,
+            WBNB
+        ) //GET LIQUIDITY POOL THAT DEALS WITH BOTH BUSD AND WBNB TOKENS
+    
+        require(pair != address(0), 'Pool does not exist');
+
+        address token0 = IUniswapV2Pair(pair).token0(); //wbnb address 
+        address token1 = IUniswapV2Pair(pair).token1(); //busd address
+
+        uint amount0Out = _busdBorrow == token0 ? _amount: 0;
+        uint amount1Out = _busdBorrow == token1 ? _amount: 0;
+
+        bytes memory data = abi.encode(_busdBorrow, _amount, msg.sender); //this variable indicates that the tokens transferred to our contract are to be used for flash loans
+        IUniswapV2Pair(pair).swap(amount0Out, amount1Out, address(this), data); //transfer busd(from amount1out) to our contract(address(this))
+    }
 }
