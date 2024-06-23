@@ -46,12 +46,12 @@ This Solidity contract facilitates flash loan-based triangular arbitrage on the 
 
 1. Clone the repository:
    ```
-   git clone https://github.com/kshitijofficial/FlashLoan.git
+   https://github.com/TanmayMachkar/FlashLoans.git
    ```
 
 2. Navigate to the project directory:
    ```
-   cd FlashLoan
+   cd FlashLoans
    ```
 
 3. Install dependencies:
@@ -59,10 +59,10 @@ This Solidity contract facilitates flash loan-based triangular arbitrage on the 
    npm install
    ```
 
-### Usage
-1. Run the FlashLoan application doing:
+### Testing
+1. Test the FlashLoan smart contract:
    ```
-   npm test
+   npx hardhat test
    ```
 
 ## Usage
