@@ -1,5 +1,5 @@
 {
-  "name": "flashloans",
+  "name": "flash",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,6 +11,10 @@
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
-    "hardhat": "^2.22.5"
+    "@nomiclabs/hardhat-waffle": "^2.0.0",
+    "hardhat": "^2.17.3"
+  },
+  "dependencies": {
+    "ethers": "^5.0.0"
   }
 }

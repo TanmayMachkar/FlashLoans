@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity =0.6.6;
 
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Pair.sol";
@@ -28,8 +28,12 @@ contract FlashLoan {
     uint256 private constant MAX_INT =
         115792089237316195423570985008687907853269984665640564039457584007913129639935;
 
-    function checkResult(uint _repay, uint _acquiredCoin) private returns(bool){
+    function checkResult(uint _repay, uint _acquiredCoin) pure private returns(bool){
         return _acquiredCoin > _repay;
+    }
+
+    function getBalanceOfToken(address _address) public view returns(uint256){
+        return IERC20(_address).balanceOf(address(this));
     }
 
     function placeTrade(address _fromToken, address _toToken, uint _amountIn) private returns(uint){
@@ -42,7 +46,7 @@ contract FlashLoan {
         path[0] = _fromToken;
         path[1] = _toToken;
 
-        uint amountRequired = IUniswapV2Router01(PANCAKE_FACTORY).getAmountOut(_amountIn, path)[1]; //1 because it approx gives us how much toToken we will get when we swap it with fromToken
+        uint256 amountRequired = IUniswapV2Router01(PANCAKE_ROUTER).getAmountsOut(_amountIn, path)[1]; //1 because it approx gives us how much toToken we will get when we swap it with fromToken
         
         uint amountReceived = IUniswapV2Router01(PANCAKE_ROUTER).swapExactTokensForTokens(
             _amountIn,
@@ -56,7 +60,7 @@ contract FlashLoan {
         return amountReceived;
     }
 
-    function initiateArbitrage(address _busdBorrow, uint _amount){
+    function initiateArbitrage(address _busdBorrow, uint _amount) external{
         IERC20(BUSD).safeApprove(address(PANCAKE_ROUTER), MAX_INT); //mere behalf pe pancake_router spend kar sakta he busd tokens(authority de rahe he) 
         IERC20(CROX).safeApprove(address(PANCAKE_ROUTER), MAX_INT);
         IERC20(CAKE).safeApprove(address(PANCAKE_ROUTER), MAX_INT);
