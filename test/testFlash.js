@@ -1,3 +1,9 @@
+//formatUnits -> convert wei to ether (18 decimals to ether)
+//-> used to convert value returned from smart contract to ether
+
+//parseUnits -> convert ether to wei
+//-> used to convert value from ether to wei to pass as parameter to a function call (since smart contract deals with wei)
+
 const { expect, assert } = require('chai');
 const { ethers } = require('hardhat');
 const { fundContract } = require('../utils/utilities');
@@ -34,7 +40,7 @@ describe('FlashLoan Contract',() => {
     await FLASHLOAN.deployed();
 
     const borrowAmountHuman = '1';
-    BORROW_AMOUNT = ethers.utils.parseUnits(borrowAmountHuman, DECIMALS);
+    BORROW_AMOUNT = ethers.utils.parseUnits(borrowAmountHuman, DECIMALS); //convert ether to wei
     initialFundingHuman = '100';
     FUND_AMOUNT = ethers.utils.parseUnits(initialFundingHuman, DECIMALS);
 
@@ -48,7 +54,7 @@ describe('FlashLoan Contract',() => {
   describe('Arbitrage Execution', () => {
     it('ensures the contract is funded', async() => {
       const flashLoanBalance = await FLASHLOAN.getBalanceOfToken(BUSD);
-      const flashLoanBalanceHuman = ethers.utils.formatUnits(
+      const flashLoanBalanceHuman = ethers.utils.formatUnits( //convert wei to ether
         flashLoanBalance,
         DECIMALS
       )
